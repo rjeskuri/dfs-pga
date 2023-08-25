@@ -16,42 +16,30 @@ if script_tag:
     json_data = json.loads(json_text)
     
     stat_details = json_data.get('props', {}).get('pageProps', {}).get('statDetails', {})
-    print(json_data['props']['pageProps'].keys())
-    #print(json_data['props']['pageProps']['statDetails'].keys())
-    #statDetails keys:
-    #['tourCode', 'year', 'displaySeason', 'statId', 'statType', 'tournamentPills', 'yearPills', 'statTitle', 'statDescription', 'tourAvg', 'lastProcessed', 'statHeaders', 'statCategories', 'rows', 'sponsorLogo']
-    print(json_data['props']['pageProps']['statOverview']['categories'][0])
-    # print(stat_details)
-    # # Retrieve and print 'year', 'statType', 'statTitle'
-    # year = stat_details.get('year')
-    # stat_type = stat_details.get('statType')
-    # stat_title = stat_details.get('statTitle')
-    
-    # print(f"Year: {year}")
-    # print(f"Stat Type: {stat_type}")
-    # print(f"Stat Title: {stat_title}\n")
-    
-    # # Iterate through rows to print player info
-    # rows = stat_details.get('rows', [])
-    # for row in rows:
-    #     player_id = row.get('playerId')
-    #     player_name = row.get('playerName')
-    #     country = row.get('country')
-    #     rank = row.get('rank')
-        
-    #     print(f"Player ID: {player_id}, Player Name: {player_name}, Country: {country}, Rank: {rank}")
-        
-    #     # Access stats for each player
-    #     for stat in row.get('stats', []):
-    #         stat_name = stat.get('statName')
-    #         stat_value = stat.get('statValue')
-    #         color = stat.get('color')
-            
-    #         print(f"  - Stat Name: {stat_name}, Stat Value: {stat_value}, Color: {color}")
-        
-    #     print()  # For a new line between players
 
+    stat_ids = []
+    # Loop through all categories
+    for category in json_data['props']['pageProps']['statOverview']['categories']:
+        # Loop through all sub-categories within a category
+        for sub_category in category['subCategories']:
+            # Loop through all stats within a sub-category
+            for stat in sub_category['stats']:
+                # Gather the statId
+                stat_id = stat['statId']
+                stat_ids.append(stat_id)  # Append statId to the list
+    
+    # print(json_data['props']['pageProps'].keys())
+    # print(json_data['props']['pageProps']['statDetails'].keys())
+    # statDetails keys:
+    # ['tourCode', 'year', 'displaySeason', 'statId', 'statType', 'tournamentPills', 'yearPills', 'statTitle', 'statDescription', 'tourAvg', 'lastProcessed', 'statHeaders', 'statCategories', 'rows', 'sponsorLogo']
+    # print(json_data['props']['pageProps']['statOverview']['categories'][0])
 else:
     print("Script tag with JSON data not found.")
 
+print(len(stat_ids))
 
+with open('stat_ids.json', 'w') as f:
+    json.dump(stat_ids, f)
+
+# with open('stat_ids.json', 'r') as f:
+#     stat_ids_loaded = json.load(f)
